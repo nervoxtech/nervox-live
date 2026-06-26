@@ -1,11 +1,25 @@
 import 'dotenv/config';
 import express, { Request, Response } from 'express';
+import cors from 'cors';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 const ENV = process.env.NODE_ENV || 'development';
+
+// ─────────────────────────────────────────
+// CORS
+// ─────────────────────────────────────────
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'https://nervox.live',
+    'https://beta.nervox.live',
+  ],
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.use(express.json());
 
