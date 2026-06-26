@@ -119,9 +119,9 @@ export default function Login() {
                     placeholder="username"
                     value={form.username}
                     onChange={handleChange}
-                    className="flex-1 bg-white text-[#0A0F1E] placeholder-[#94A3B8] px-4 py-3 text-sm focus:outline-none font-[Inter,sans-serif]"
+                    className="flex-1 min-w-0 bg-white text-[#0A0F1E] placeholder-[#94A3B8] px-4 py-3 text-sm focus:outline-none font-[Inter,sans-serif]"
                   />
-                  <span className="bg-[#F8FAFC] border-l border-[#CBD5E1] px-3 flex items-center text-[#94A3B8] text-sm font-[Inter,sans-serif] whitespace-nowrap">
+                  <span className="bg-[#F8FAFC] border-l border-[#CBD5E1] px-2 sm:px-3 flex items-center text-[#94A3B8] text-xs sm:text-sm font-[Inter,sans-serif] whitespace-nowrap shrink-0">
                     @nervox.live
                   </span>
                 </div>
