@@ -15,7 +15,9 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'https://nervox.live',
+    'https://www.nervox.live',
     'https://beta.nervox.live',
+    'https://nervox-live.vercel.app',
   ],
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
