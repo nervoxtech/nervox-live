@@ -47,7 +47,6 @@ router.patch('/:username', requireAuth, async (req: Request, res: Response): Pro
   }
   const fullUsername = `${username}@nervox.live`;
 
-  // only allow editing own profile
   const { data: currentUser, error: currentUserError } = await supabase
     .from('users')
     .select('id, email')
@@ -70,7 +69,6 @@ router.patch('/:username', requireAuth, async (req: Request, res: Response): Pro
   if (name) updates.name = name;
   if (mobile) updates.mobile = mobile;
 
-  // email update — check uniqueness
   if (email && email !== currentUser.email) {
     const { data: existingEmail } = await supabase
       .from('users')
@@ -83,7 +81,6 @@ router.patch('/:username', requireAuth, async (req: Request, res: Response): Pro
       return;
     }
 
-    // update email in Supabase Auth
     const { error: authEmailError } = await supabase.auth.admin.updateUserById(
       currentUser.id,
       { email }
@@ -118,6 +115,72 @@ router.patch('/:username', requireAuth, async (req: Request, res: Response): Pro
     message: 'Profile updated successfully.',
     user: updatedUser,
   });
+});
+
+// ─────────────────────────────────────────
+// CHANGE PASSWORD
+// PATCH /api/v1/users/:username/password
+// ─────────────────────────────────────────
+router.patch('/:username/password', requireAuth, async (req: Request, res: Response): Promise<void> => {
+  let username = req.params.username.trim().toLowerCase();
+
+  if (username.endsWith('@nervox.live')) {
+    username = username.replace('@nervox.live', '');
+  }
+  const fullUsername = `${username}@nervox.live`;
+
+  const { current_password, new_password } = req.body;
+
+  if (!current_password || !new_password) {
+    res.status(400).json({ error: 'Current password and new password are required.' });
+    return;
+  }
+
+  if (new_password.length < 6) {
+    res.status(400).json({ error: 'New password must be at least 6 characters.' });
+    return;
+  }
+
+  // get user email
+  const { data: currentUser, error: currentUserError } = await supabase
+    .from('users')
+    .select('id, email')
+    .eq('username', fullUsername)
+    .maybeSingle();
+
+  if (currentUserError || !currentUser) {
+    res.status(404).json({ error: 'User not found.' });
+    return;
+  }
+
+  if (currentUser.id !== req.user?.id) {
+    res.status(403).json({ error: 'You can only change your own password.' });
+    return;
+  }
+
+  // verify current password by signing in
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: currentUser.email,
+    password: current_password,
+  });
+
+  if (signInError) {
+    res.status(401).json({ error: 'Current password is incorrect.' });
+    return;
+  }
+
+  // update password
+  const { error: updateError } = await supabase.auth.admin.updateUserById(
+    currentUser.id,
+    { password: new_password }
+  );
+
+  if (updateError) {
+    res.status(500).json({ error: 'Error updating password.' });
+    return;
+  }
+
+  res.status(200).json({ message: 'Password updated successfully.' });
 });
 
 export default router;

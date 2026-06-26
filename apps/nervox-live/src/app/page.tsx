@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function ComingSoon() {
   const [email, setEmail] = useState('')
@@ -44,8 +45,8 @@ export default function ComingSoon() {
                       px-6 py-12
                       sm:px-12 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
 
-        {/* Logo */}
-        <header className="flex justify-center">
+        {/* Header */}
+        <header className="flex justify-between items-center">
           <Image
             src="/logo.jpg"
             alt="NerVox"
@@ -54,6 +55,20 @@ export default function ComingSoon() {
             className="h-20 w-auto"
             priority
           />
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="text-sm font-medium text-[#0A0F1E] hover:text-[#0EA5E9] transition-colors duration-200 font-[Inter,sans-serif]"
+            >
+              Log in
+            </Link>
+            <Link
+              href="/signup"
+              className="bg-[#0EA5E9] hover:bg-[#0284C7] text-white font-semibold rounded-lg px-4 py-2 text-sm transition-colors duration-200 font-[Inter,sans-serif]"
+            >
+              Sign up
+            </Link>
+          </div>
         </header>
 
         {/* Hero */}
